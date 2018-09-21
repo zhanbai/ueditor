@@ -96,41 +96,6 @@ try {
     fclose($handle);
     exit;
 }
-/*
-$upyun = new UpYun($servename, $username, $password);
-
-try {
-    $uri = strstr($info["url"], "upload");
-
-    if (file_exists($uri)) {
-        $opts = array(
-            UpYun::CONTENT_MD5 => md5(file_get_contents($uri))
-        );
-
-        $fh = fopen($uri, "rb");
-        $rsp = $upyun->writeFile("/ueditor/php/" . $uri, $fh, True, $opts);
-        fclose($fh);
-    }
-    else {
-        $log = date("Y-m-d H:m:s") . " 文件不存在，请检查目录是否正确。" . "\r\n";
-        $log_file = "log.txt";
-
-        $handle = fopen($log_file, "a");
-        fwrite($handle, $log);
-        fclose($handle);
-        exit;
-    }
-}
-catch(Exception $e) {
-    $log = date("Y-m-d H:m:s") . " " . $e->getCode() . " " . $e->getMessage() . "\r\n";
-    $log_file = "log.txt";
-
-    $handle = fopen($log_file, "a");
-    fwrite($handle, $log);
-    fclose($handle);
-    exit;
-}
-*/
 
 /**
  * 得到上传文件所对应的各个参数,数组结构
