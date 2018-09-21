@@ -5,9 +5,12 @@
  * Date: 14-04-09
  * Time: 上午10:17
  */
+
+use Qcloud\Cos\Client;
+
 include "Uploader.class.php";
-include "upyun.class.php";
-include "upyun.config.php";
+include "qcloud.config.php";
+require "../vendor/autoload.php";
 
 /* 上传配置 */
 $base64 = "upload";
@@ -54,8 +57,46 @@ $up = new Uploader($fieldName, $config, $base64);
 
 $info = $up->getFileInfo();
 
-// 将文件同步存储到又拍云
+// 将文件同步存储到腾讯云 COS
 
+$cosClient = new Client(array(
+    'region' => $region,
+    'credentials' => array(
+        'secretId' => $secretId,
+        'secretKey' => $secretKey
+    )
+));
+
+try {
+    $local_path = strstr($info["url"], "upload");
+
+    if (file_exists($local_path)) {
+        $result = $cosClient->Upload(
+            $bucket = $bucketname,
+            $key = $info["url"],
+            $body = fopen($local_path, "rb")
+        );
+    }
+    else {
+        $log = date("Y-m-d H:m:s") . " 文件不存在，请检查目录是否正确。" . "\r\n";
+        $log_file = "log.txt";
+
+        $handle = fopen($log_file, "a");
+        fwrite($handle, $log);
+        fclose($handle);
+        exit;
+    }
+
+} catch (Exception $e) {
+    $log = date("Y-m-d H:m:s") . " " . $e->getCode() . " " . $e->getMessage() . "\r\n";
+    $log_file = "log.txt";
+
+    $handle = fopen($log_file, "a");
+    fwrite($handle, $log);
+    fclose($handle);
+    exit;
+}
+/*
 $upyun = new UpYun($servename, $username, $password);
 
 try {
@@ -89,6 +130,8 @@ catch(Exception $e) {
     fclose($handle);
     exit;
 }
+*/
+
 /**
  * 得到上传文件所对应的各个参数,数组结构
  * array(
